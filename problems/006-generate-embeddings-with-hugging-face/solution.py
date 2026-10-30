@@ -2,6 +2,27 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+def custom_l2_normalize(tensor, dim=1, eps=1e-12):
+    """Custom L2 normalization method:
+
+    1. Computes the Euclidean norm: sqrt(sum(x^2))
+    2. Safely divides the tensor by its norm using broadcasting.
+    """
+    # Step A: Square every element, then sum along the feature dimension (dim=1).
+    # keepdim=True preserves the dimension as (n, 1) instead of collapsing it to (n,).
+    squared_sum = torch.sum(tensor**2, dim=dim, keepdim=True)
+
+    # Step B: Take the square root to get the final L2 norm magnitude for each row.
+    norm = torch.sqrt(squared_sum)
+
+    # Step C: Clamp the norm to a tiny epsilon value to prevent division by zero
+    # if a sentence embedding vector happens to be all zeros.
+    norm = torch.clamp(norm, min=eps)
+
+    # Step D: Divide the tensor by the norm.
+    # BROADCASTING: tensor has shape (n, d) and norm has shape (n, 1).
+    # PyTorch automatically stretches the (n, 1) norm horizontally across all d columns.
+    return tensor / norm
 
 def embed(sentences, tokenizer, model):
     """Return normalized sentence embeddings, shape (n, d), as a NumPy array."""
@@ -70,8 +91,9 @@ def embed(sentences, tokenizer, model):
     # and divides every element by that magnitude.
     # This projects all embeddings onto a unit hypersphere, making cosine similarity
     # mathematically equivalent to a simple vector dot product (u . v).
-    normalized_embeddings = F.normalize(sentence_embeddings, p=2, dim=1)
-
+    # We will be using our custom normalisation util.
+    # normalized_embeddings = F.normalize(sentence_embeddings, p=2, dim=1)
+    normalized_embeddings = custom_l2_normalize(sentence_embeddings, dim=1)  # Shape: (n, 384)
     
     # STEP 5: CONVERSION TO NUMPY (Under the Hood)
     # .cpu() ensures the tensor is moved from GPU memory to CPU RAM (if a GPU was used),
