@@ -86,3 +86,13 @@ def top_k_search(query, documents, k):
     return [(int(idx), float(scores[idx])) for idx in sorted_indices]
 
 
+
+# Detailed Comparison & Tradeoffs : 
+# The Sorting Bottleneck (N logN vs. N):
+# Naive Approach: Relies on a full sort of the entire score array, taking O(N logN) operations. 
+# As our document corpus scales to millions of entries, the sorting overhead dominates CPU cycles, even if we only care about the top 5 results.
+# Optimized Approach: Utilizes the introselect algorithm via np.argpartition to partition the array in O(N) linear time. 
+# It isolates the k highest-scoring documents without wasting compute cycles sorting the remaining N - k irrelevant items.
+# When to use which ? 
+# Naive Approach is simpler and fine for very small datasets where N is small (e.g., a few hundred items), where the overhead difference is negligible.
+# Optimized Approach is essential for large-scale production systems (N >>>> k, e.g., searching 100,000+ documents for top k=10), providing massive speedups by avoiding unnecessary full-array sorting.
