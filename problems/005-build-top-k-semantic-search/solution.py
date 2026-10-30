@@ -26,9 +26,7 @@ def cosine_similarity(query, documents):
     return similarities
 
 
-# =============================================================================
 # NAIVE APPROACH: Full Sort via np.lexsort
-# =============================================================================
 def top_k_search_naive(query, documents, k):
     """Return the k most similar documents as [(index, score), ...], best first.
 
@@ -52,9 +50,7 @@ def top_k_search_naive(query, documents, k):
     return [(int(idx), float(scores[idx])) for idx in top_indices]
 
 
-# =============================================================================
 # OPTIMIZED APPROACH: Partial Sort via np.argpartition
-# =============================================================================
 def top_k_search(query, documents, k):
     """Return the k most similar documents as [(index, score), ...], best first
 
