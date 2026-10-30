@@ -15,17 +15,47 @@ We have defined a blueprint (template) that looks like this :
 {% if add_generation_prompt %}<|assistant|>{% endif %}
 
 Step 2 : How apply_chat_template executes it ->
-
 2.1 The Loop (for m in messages): It loops through each message in our Python list.
 2.2 Variable Substitution: It extracts the dictionary values (m['role'] and m['content']) and injects them into the template brackets {{ ... }}.
 2.3 Conditional Logic (if add_generation_prompt):
-If True (used for inference/chatting), it appends <|assistant|>\n at the very end. 
-This acts as a cue card telling the model: "It's your turn to talk now!"
+- If True (used for inference/chatting), it appends <|assistant|>\n at the very end. 
+  This acts as a cue card telling the model: "It's your turn to talk now!"
+- If False (used for training), it leaves the prompt suffix off because the assistant's response is already provided in the conversation history.
 
-If False (used for training), it leaves the prompt suffix off because the assistant's response is already provided in the conversation history.
+Step 3 : Live Trace Examples ->
+-------------------------------------------------------------------------
+3.1 format_chat(CHAT) [Inference Mode / add_generation_prompt=True]:
+    Input CHAT:
+    [
+        {"role": "system", "content": "You are terse."},
+        {"role": "user", "content": "Capital of France?"}
+    ]
+    
+    Resulting Output String:
+    <|system|>
+    You are terse.<|end|>
+    <|user|>
+    Capital of France?<|end|>
+    <|assistant|>
 
-
+-------------------------------------------------------------------------
+3.2 format_for_training(DONE) [Training Mode / add_generation_prompt=False]:
+    Input DONE:
+    [
+        {"role": "system", "content": "You are terse."},
+        {"role": "user", "content": "Capital of France?"},
+        {"role": "assistant", "content": "Paris."}
+    ]
+    
+    Resulting Output String:
+    <|system|>
+    You are terse.<|end|>
+    <|user|>
+    Capital of France?<|end|>
+    <|assistant|>
+    Paris.<|end|>
 """
+
 
 def format_chat(messages):
     """Formats a conversation history into a prompt string ready for inference.
