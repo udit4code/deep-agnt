@@ -11,3 +11,19 @@ def ask_model(model, system, messages, max_tokens=300):
     
     # Join and strip the resulting string
     return "".join(text_parts).strip()
+
+
+import re
+
+def citations(answer):
+    """Returns the source numbers an answer cites, as a sorted list of distinct ints."""
+    if not answer:
+        return []
+    
+    # Find all occurrences of one or more digits inside brackets (e.g., [1], [2])
+    matches = re.findall(r'\[(\d+)\]', answer)
+    
+    # Convert to integers, remove duplicates using a set, and sort
+    distinct_citations = sorted({int(m) for m in matches})
+    
+    return distinct_citations
