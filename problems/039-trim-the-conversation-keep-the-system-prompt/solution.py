@@ -6,11 +6,11 @@ def trim_history(messages, max_tokens):
     if not messages:
         return messages
         
-    # Return unchanged if it already fits within the token budget
+    # Step 1 : Return unchanged if it already fits within the token budget
     if count_tokens(messages) <= max_tokens:
         return messages
         
-    # 1. Identify and separate the system prompt if present
+    # Step 2 : Identify and separate the system prompt if present
     has_system = messages[0].get("role") == "system"
     system_msgs = [messages[0]] if has_system else []
     rest = messages[1:] if has_system else messages
@@ -18,18 +18,18 @@ def trim_history(messages, max_tokens):
     if not rest:
         return messages
         
-    # 2. The most recent user message is never dropped
+    # Step 3 : The most recent user message is never dropped
     last_msg = rest[-1]
     pairs_flat = rest[:-1]
     
-    # Group the intermediate history into (user, assistant) pairs
+    # Step 4 : Group the intermediate history into (user, assistant) pairs
     pairs = []
     i = 0
     while i < len(pairs_flat) - 1:
         pairs.append([pairs_flat[i], pairs_flat[i+1]])
         i += 2
         
-    # 3. Drop pairs from the oldest end one by one until it fits
+    # Step 5 : Drop pairs from the oldest end one by one until it fits
     for i in range(len(pairs) + 1):
         current_pairs = []
         for p in pairs[i:]:
@@ -39,7 +39,7 @@ def trim_history(messages, max_tokens):
         if count_tokens(candidate) <= max_tokens:
             return candidate
             
-    # 4. If system prompt + last user message alone still exceed the budget,
+    # Step 6 : If system prompt + last user message alone still exceed the budget,
     # truncate the last user message from the front, keeping its tail.
     content = last_msg.get("content", "")
     role = last_msg.get("role", "user")
