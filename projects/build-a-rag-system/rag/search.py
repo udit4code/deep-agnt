@@ -24,3 +24,18 @@ def embed_texts(embedder, texts):
     if not texts:
         return []
     return embedder.embed(texts)
+
+
+def build_index(embedder, chunks):
+    """Embeds every chunk's text in one call and returns a list of indexed chunk dictionaries."""
+    if not chunks:
+        return []
+    
+    # Extract all texts from the chunks
+    texts = [chunk["text"] for chunk in chunks]
+    
+    # Embed all texts in a single batch call using embed_texts
+    vectors = embed_texts(embedder, texts)
+    
+    # Combine chunks and their corresponding vectors in order
+    return [{"chunk": chunk, "vector": vector} for chunk, vector in zip(chunks, vectors)]
