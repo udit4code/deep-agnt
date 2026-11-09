@@ -32,3 +32,25 @@ def pack(paras, max_words):
         chunks.append(" ".join(current_chunk))
         
     return chunks
+
+
+def chunk_docs(docs, max_words=80):
+    """Returns one list of chunks across every document in the order of docs."""
+    all_chunks = []
+    
+    for doc_id, text in docs.items():
+        # Split text into non-empty paragraphs
+        paras = [p for p in text.split("\n") if p.strip()]
+        
+        # Pack paragraphs into chunks using the pack function
+        chunk_texts = pack(paras, max_words)
+        
+        # Build chunk dictionaries with formatted IDs
+        for n, chunk_text in enumerate(chunk_texts):
+            all_chunks.append({
+                "id": f"{doc_id}:{n}",
+                "doc": doc_id,
+                "text": chunk_text
+            })
+            
+    return all_chunks
