@@ -39,3 +39,22 @@ def build_index(embedder, chunks):
     
     # Combine chunks and their corresponding vectors in order
     return [{"chunk": chunk, "vector": vector} for chunk, vector in zip(chunks, vectors)]
+
+
+import heapq
+
+def nearest(index, vector, k=3):
+    """Returns the top k chunks most similar to vector by cosine in O(N log k) time."""
+    if not index:
+        return []
+    
+    # heapq.nlargest finds the top k efficiently.
+    # Tuple key: (cosine_similarity, -original_index) ensures stable tie-breaking 
+    # (higher similarity first, and for ties, the earlier index comes first).
+    top_entries = heapq.nlargest(
+        k,
+        enumerate(index),
+        key=lambda item: (cosine(item[1]["vector"], vector), -item[0])
+    )
+    
+    return [entry["chunk"] for _, entry in top_entries]
