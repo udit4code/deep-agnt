@@ -87,3 +87,16 @@ def abstained(answer):
         return t
         
     return clean(answer) == clean(NO_ANSWER)
+
+
+def answer_or_abstain(model, embedder, index, question, k=3):
+    """Answers the question or normalizes the output if the model abstains."""
+    result = answer_question(model, embedder, index, question, k=k)
+    
+    if abstained(result["answer"]):
+        return {
+            "answer": NO_ANSWER,
+            "sources": []
+        }
+        
+    return result
