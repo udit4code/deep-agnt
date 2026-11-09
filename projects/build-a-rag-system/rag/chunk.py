@@ -40,15 +40,15 @@ def chunk_docs(docs, max_words=80):
     
     for doc_id, text in docs.items():
         # Split text into non-empty paragraphs
-        paras = [p for p in text.split("\n") if p.strip()]
+        paras = [paragraph for paragraph in text.split("\n") if paragraph.strip()]
         
         # Pack paragraphs into chunks using the pack function
         chunk_texts = pack(paras, max_words)
         
         # Build chunk dictionaries with formatted IDs
-        for n, chunk_text in enumerate(chunk_texts):
+        for chunk_id, chunk_text in enumerate(chunk_texts):
             all_chunks.append({
-                "id": f"{doc_id}:{n}",
+                "id": f"{doc_id}:{chunk_id}",
                 "doc": doc_id,
                 "text": chunk_text
             })
