@@ -2,7 +2,7 @@
 
 Retrieval-augmented answering over a store's policy documents, as 26 small functions on a real embedding model and a real chat model: chunk, embed, search by meaning and by keyword, cite, abstain, and check every sentence.
 
-Built step by step on [Deep-Agnt](https://deep-agnt.com/projects/rag-system): 22 of 26 steps passed, each graded by tests.
+Built step by step on [Deep-Agnt](https://deep-agnt.com/projects/rag-system): 23 of 26 steps passed, each graded by tests.
 
 - [x] Step 1: Split a document into paragraphs
 - [x] Step 2: Pack paragraphs into chunks
@@ -26,3 +26,4 @@ Built step by step on [Deep-Agnt](https://deep-agnt.com/projects/rag-system): 22
 - [x] Step 20: Did it abstain?
 - [x] Step 21: Answer, or say the sources are silent
 - [x] Step 22: Split into sentences
+- [x] Step 23: Is one sentence supported?
