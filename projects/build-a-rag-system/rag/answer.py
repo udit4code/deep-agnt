@@ -71,3 +71,19 @@ def answer_question(model, embedder, index, question, k=3):
         "answer": answer,
         "sources": sources
     }
+
+
+def abstained(answer):
+    """Returns True when the answer matches the NO_ANSWER sentence,
+    ignoring surrounding whitespace, case, and the final full stop.
+    """
+    if not answer:
+        return False
+        
+    def clean(text):
+        t = text.strip().lower()
+        if t.endswith('.'):
+            t = t[:-1].strip()
+        return t
+        
+    return clean(answer) == clean(NO_ANSWER)
