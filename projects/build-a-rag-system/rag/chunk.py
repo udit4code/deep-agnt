@@ -1,2 +1,2 @@
 def paragraphs(text):
-    return [paragraph.strip() for paragraph in text.split("\n") if len(paragraph.strip()) > 0]
+    return [paragraph for paragraph in (line.strip() for line in text.split("\n")) if paragraph]
