@@ -58,3 +58,19 @@ def nearest(index, vector, k=3):
     )
     
     return [entry["chunk"] for _, entry in top_entries]
+
+
+def search(embedder, index, question, k=3):
+    """Embeds the question in one call and returns the k nearest chunks."""
+    if not index or not question:
+        return []
+    
+    # Embed the question as a single-item list (one call)
+    vectors = embed_texts(embedder, [question])
+    if not vectors:
+        return []
+    
+    query_vector = vectors[0]
+    
+    # Find and return the k nearest chunks using nearest
+    return nearest(index, query_vector, k=k)
