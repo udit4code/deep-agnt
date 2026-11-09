@@ -46,3 +46,28 @@ def cited_chunks(chunks, answer):
             result.append(chunks[idx])
             
     return result
+
+
+def answer_question(model, embedder, index, question, k=3):
+    """Answers a question by performing hybrid search, fitting context, querying the model, and extracting cited sources."""
+    # Step 1 : Retrieve relevant chunks using hybrid_search
+    retrieved_chunks = hybrid_search(embedder, index, question, k=k)
+    
+    # Step 2 : Keep chunks that fit within the CONTEXT_WORDS budget using fit
+    kept = fit(retrieved_chunks, CONTEXT_WORDS)
+    
+    # Step 3 : Build the RAG system prompt and messages
+    rag_data = rag_messages(question, kept)
+    system_prompt = rag_data["system"]
+    messages = rag_data["messages"]
+    
+    # 4. Ask the model using ask_model
+    answer = ask_model(model, system_prompt, messages)
+    
+    # 5. Extract cited sources from the answer text relative to the kept chunks
+    sources = cited_chunks(kept, answer)
+    
+    return {
+        "answer": answer,
+        "sources": sources
+    }
