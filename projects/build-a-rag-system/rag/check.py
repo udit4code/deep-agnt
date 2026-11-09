@@ -25,3 +25,20 @@ def is_supported(model, sentence, sources):
     
     # Treat a reply starting with 'yes' (any case) as True, anything else as False
     return reply.strip().lower().startswith("yes")
+
+
+def unsupported(model, answer, sources):
+    """Returns the sentences of answer that are not supported by the sources, in order."""
+    if not answer or abstained(answer):
+        return []
+    
+    # Split the answer into individual sentences
+    answer_sentences = sentences(answer)
+    
+    unsupported_list = []
+    for sentence in answer_sentences:
+        # Check if the sentence is supported by the sources
+        if not is_supported(model, sentence, sources):
+            unsupported_list.append(sentence)
+            
+    return unsupported_list
