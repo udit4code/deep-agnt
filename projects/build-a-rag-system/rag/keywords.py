@@ -26,3 +26,30 @@ def keyword_rank(chunks, question):
     sorted_chunks = sorted(scored_chunks, key=lambda x: (x[0], -x[1]), reverse=True)
     
     return [chunk_id for _, _, chunk_id in sorted_chunks]
+
+
+from collections import defaultdict
+
+def rrf(rankings, k=60):
+    """Fuses several rankings (lists of ids) using Reciprocal Rank Fusion."""
+    scores = defaultdict(float)
+    first_seen = {}
+    order_counter = 0
+    
+    # Accumulate scores and track the order of first appearance across rankings
+    for ranking in rankings:
+        for i, item in enumerate(ranking):
+            scores[item] += 1.0 / (k + i + 1)
+            if item not in first_seen:
+                first_seen[item] = order_counter
+                order_counter += 1
+                
+    # Sort items by score descending. 
+    # For ties, -first_seen[x] ensures that items seen earlier (smaller first_seen index) come first.
+    sorted_items = sorted(
+        scores.keys(),
+        key=lambda x: (scores[x], -first_seen[x]),
+        reverse=True
+    )
+    
+    return sorted_items
