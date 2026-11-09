@@ -27,3 +27,22 @@ def citations(answer):
     distinct_citations = sorted({int(m) for m in matches})
     
     return distinct_citations
+
+
+def cited_chunks(chunks, answer):
+    """Returns the chunks the answer cites, in citation order, skipping invalid indices."""
+    if not chunks or not answer:
+        return []
+    
+    # Get the sorted list of distinct citation numbers from citations()
+    cited_nums = citations(answer)
+    
+    result = []
+    for num in cited_nums:
+        # Convert 1-based citation number to 0-based index
+        idx = num - 1
+        # Check if the index exists within the chunks list bounds
+        if 0 <= idx < len(chunks):
+            result.append(chunks[idx])
+            
+    return result
