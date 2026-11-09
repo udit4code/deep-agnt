@@ -17,3 +17,10 @@ def cosine(a, b):
     
     # Return as a standard Python float
     return float(cosine_product)
+
+
+def embed_texts(embedder, texts):
+    """Returns the vectors for texts, in order, from one call to embedder.embed(texts)."""
+    if not texts:
+        return []
+    return embedder.embed(texts)
