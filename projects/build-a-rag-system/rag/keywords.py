@@ -53,3 +53,28 @@ def rrf(rankings, k=60):
     )
     
     return sorted_items
+
+
+def hybrid_search(embedder, index, question, k=3):
+    """Performs hybrid search fusing semantic search and keyword rank using RRF."""
+    if not index or not question:
+        return []
+    
+    # Extract all chunks from the index
+    chunks = [e["chunk"] for e in index]
+    
+    # 1. Semantic search ranking (using search with k set to the size of the index)
+    semantic_results = search(embedder, index, question, k=len(index))
+    semantic_ids = [c["id"] for c in semantic_results]
+    
+    # 2. Keyword rank ranking over the same chunks
+    keyword_ids = keyword_rank(chunks, question)
+    
+    # 3. Fuse both rankings using Reciprocal Rank Fusion (rrf)
+    fused_ids = rrf([semantic_ids, keyword_ids])
+    
+    # Create a mapping from chunk id to the chunk dictionary for fast lookup
+    chunk_map = {c["id"]: c for c in chunks}
+    
+    # Return the top k chunk dictionaries in the fused order
+    return [chunk_map[cid] for cid in fused_ids if cid in chunk_map][:k]
