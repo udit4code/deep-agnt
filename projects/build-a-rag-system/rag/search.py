@@ -1,18 +1,21 @@
-import numpy as np 
+import math
 
 def cosine(a, b):
-    """Calculate the cosine similarity between two vectors a and b."""
-    a = np.asarray(a, dtype=float)
-    b = np.asarray(b, dtype=float)
+    """Calculate the cosine similarity between two vectors a and b without numpy."""
+    # Convert inputs to floats
+    a_float = [float(x) for x in a]
+    b_float = [float(x) for x in b]
     
-    a_norm = np.linalg.norm(a)
-    b_norm = np.linalg.norm(b)
+    # Compute dot product and norms using built-in functions
+    dot_product = sum(x * y for x, y in zip(a_float, b_float))
+    
+    a_norm = math.sqrt(sum(x * x for x in a_float))
+    b_norm = math.sqrt(sum(x * x for x in b_float))
     
     # Prevent division by zero if either vector is a zero vector
     if a_norm == 0.0 or b_norm == 0.0:
         return 0.0 
         
-    dot_product = np.dot(a, b)
     cosine_product = dot_product / (a_norm * b_norm)
     
     # Return as a standard Python float
