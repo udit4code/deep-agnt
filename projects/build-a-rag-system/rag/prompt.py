@@ -36,3 +36,21 @@ def fit(chunks, max_words):
                 break
                 
     return kept
+
+
+def rag_messages(question, chunks):
+    """Returns the system prompt and messages dictionary configured for RAG generation."""
+    system_prompt = (
+        "You answer questions using only the provided numbered sources (e.g., [1]), in one or two sentences, "
+        "ending each sentence with the number of the source it came from in square brackets. "
+        f"When the sources do not contain the answer, reply with exactly {NO_ANSWER} and nothing else."
+    )
+    
+    user_content = f"{numbered(chunks)}\n\nQuestion: {question}"
+    
+    return {
+        "system": system_prompt,
+        "messages": [
+            {"role": "user", "content": user_content}
+        ]
+    }
