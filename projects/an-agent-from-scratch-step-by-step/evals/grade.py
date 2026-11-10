@@ -73,3 +73,24 @@ def first_error_turn(summary):
         if stat.get("errors", 0) > 0:
             return stat["turn"]
     return None
+
+
+import re
+
+def total_calls(summary):
+    """Return the total number of calls from the total summary line, or 0 if not found."""
+    if isinstance(summary, str):
+        lines = summary.strip().splitlines()
+    else:
+        lines = list(summary)
+        
+    if not lines:
+        return 0
+        
+    # Check the last line first as specified, with a fallback search in case of trailing whitespace/newlines
+    for line in reversed(lines):
+        match = re.search(r"total calls=(\d+)", line)
+        if match:
+            return int(match.group(1))
+            
+    return 0
