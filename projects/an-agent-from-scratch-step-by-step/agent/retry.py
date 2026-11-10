@@ -43,3 +43,22 @@ def retry_after(headers):
         return None
     except (ValueError, TypeError):
         return None
+
+
+def call_with_retry(fn, attempts=4, base=0.5, sleep=time.sleep):
+    """Call fn() and return its result, retrying retryable errors with exponential backoff."""
+    for attempt in range(attempts):
+        try:
+            return fn()
+        except Exception as e:
+            # Propagate non-retryable errors immediately
+            if not is_retryable(e):
+                raise
+            
+            # If we've exhausted all allowed attempts, re-raise the error
+            if attempt == attempts - 1:
+                raise
+            
+            # Calculate backoff delay and sleep before the next attempt
+            delay = backoff_delay(attempt, base)
+            sleep(delay)
