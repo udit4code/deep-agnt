@@ -11,3 +11,11 @@ def text_blocks(response):
         text_blocks_list.append(block.get("text", ""))
         
     return text_blocks_list
+
+
+def text_of(response):
+    """Extract text blocks, join them with a newline, and strip the result."""
+    blocks = text_blocks(response)
+    if not blocks:
+        return ""
+    return "\n".join(blocks).strip()
