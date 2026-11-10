@@ -65,3 +65,11 @@ def turn_stats(summary):
             
     # Return sorted by turn number order
     return [turns_data[t] for t in sorted(turns_data.keys())]
+
+
+def first_error_turn(summary):
+    """Return the turn number of the first turn that contains errors, or None if no errors exist."""
+    for stat in turn_stats(summary):
+        if stat.get("errors", 0) > 0:
+            return stat["turn"]
+    return None
