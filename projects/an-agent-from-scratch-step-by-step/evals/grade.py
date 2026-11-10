@@ -94,3 +94,25 @@ def total_calls(summary):
             return int(match.group(1))
             
     return 0
+
+
+def grade_run(expected, actual, summary):
+    """Grade an agent run by checking answer correctness, total calls, and the first bad turn."""
+    # Handle None cases: actual answer of None never passes
+    if actual is None or expected is None:
+        passed = False
+    else:
+        # Compare expected and actual strings case-insensitively with stripped whitespace
+        passed = str(expected).strip().lower() == str(actual).strip().lower()
+        
+    # Extract total model calls from the trace summary
+    calls = total_calls(summary)
+    
+    # Identify the first turn where a tool error occurred
+    first_bad_turn = first_error_turn(summary)
+    
+    return {
+        "passed": passed,
+        "calls": calls,
+        "first_bad_turn": first_bad_turn
+    }
