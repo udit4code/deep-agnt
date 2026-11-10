@@ -116,3 +116,12 @@ def grade_run(expected, actual, summary):
         "calls": calls,
         "first_bad_turn": first_bad_turn
     }
+
+
+def pass_rate(results):
+    """Return the fraction of results whose passed status is True, rounded to 2 decimal places. Returns 0.0 for empty lists."""
+    if not results:
+        return 0.0
+    
+    passed_count = sum(1 for r in results if r.get("passed", False))
+    return round(passed_count / len(results), 2)
