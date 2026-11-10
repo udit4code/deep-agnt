@@ -46,3 +46,25 @@ def tool_result(tool_use_id, content, is_error=False):
     if is_error:
         result["is_error"] = True
     return result
+
+
+def run_tool(block, registry):
+    """Look up and execute a tool from the registry, handling unknown tools and exceptions."""
+    # Extract tool invocation details from the block
+    tool_use_id = block.get("id")
+    name = block.get("name")
+    inputs = block.get("input", {})
+    
+    # Check if the requested tool exists in the provided registry
+    if name not in registry:
+        return tool_result(tool_use_id, f"unknown tool '{name}'", is_error=True)
+        
+    try:
+        # Retrieve the callable function and execute it with unpacked arguments
+        fn = registry[name]
+        result = fn(**inputs)
+        return tool_result(tool_use_id, result)
+    except Exception as e:
+        # Catch any exceptions raised during execution and format them as tool errors
+        error_msg = f"{type(e).__name__}: {e}"
+        return tool_result(tool_use_id, error_msg, is_error=True)
