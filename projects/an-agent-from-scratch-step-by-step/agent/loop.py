@@ -21,3 +21,24 @@ def handle_tool_turn(reply, messages, tools):
     messages.append(results_message(results))
     
     return results
+
+
+def run_agent(task, model, tools, specs, max_turns=6):
+    """Run the main agent loop, managing conversation turns and tool execution."""
+    # Initialize conversation history with the starting user task
+    messages = [user_message(task)]
+    
+    for _ in range(max_turns):
+        # Request next reply from the model passing current history and tool specs
+        reply = model.chat(messages, tools=specs)
+        
+        # Check if the model requested tool invocations
+        if wants_tool(reply):
+            # Execute tool blocks, update conversation history with results, and iterate
+            handle_tool_turn(reply, messages, tools)
+        else:
+            # Model provided a final text response without tool calls
+            return text_of(reply)
+            
+    # Exceeded maximum allowed turns without reaching a final response
+    return None
