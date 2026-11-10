@@ -12,7 +12,7 @@ def run_parallel(tools, calls, timeout=0.5):
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = []
             
-            # 1. Validate and submit all valid tool calls concurrently
+            # Step 1 : Validate and submit all valid tool calls concurrently
             for call in calls:
                 name = call.get("name")
                 args = call.get("arguments", {})
@@ -24,7 +24,7 @@ def run_parallel(tools, calls, timeout=0.5):
                     future = executor.submit(func, **args)
                     futures.append((name, future))
             
-            # 2. Collect results in the exact order the calls were given
+            # Step 2 : Collect results in the exact order the calls were given
             for i, call in enumerate(calls):
                 name = call.get("name")
                 item = futures[i]
