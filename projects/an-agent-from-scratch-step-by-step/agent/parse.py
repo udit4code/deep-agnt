@@ -38,3 +38,15 @@ def wants_tool(response):
     if not isinstance(response, dict):
         return False
     return response.get("stop_reason") == "tool_use"
+
+
+def assistant_message(response):
+    """Return an assistant role message with the response's content, defaulting to [] if empty."""
+    if not isinstance(response, dict):
+        return {"role": "assistant", "content": []}
+        
+    content = response.get("content")
+    if content is None:
+        content = []
+        
+    return {"role": "assistant", "content": content}
