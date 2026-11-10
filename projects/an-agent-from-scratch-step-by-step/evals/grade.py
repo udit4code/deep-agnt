@@ -123,5 +123,8 @@ def pass_rate(results):
     if not results:
         return 0.0
     
-    passed_count = sum(1 for r in results if r.get("passed", False))
+    passed_count = 0 
+    for r in results:
+        if r.get("passed", False):
+            passed_count += 1
     return round(passed_count / len(results), 2)
