@@ -23,13 +23,13 @@ def assemble(events):
     for event in events:
         if not isinstance(event, dict):
             continue
-        _process_event(event, state)
+        process_event(event, state)
         
     # Phase 2: Finalize and structure the accumulated blocks into the final result
-    return _build_final_result(state)
+    return build_final_result(state)
 
 
-def _process_event(event, state):
+def process_event(event, state):
     """Dispatches an individual event to its appropriate handler based on type."""
     etype = event.get("type")
     
@@ -96,7 +96,7 @@ def _handle_error_event(event):
     raise StreamError(msg)
 
 
-def _build_final_result(state):
+def build_final_result(state):
     """Assembles text blocks and safely parses tool arguments in block order."""
     text_pieces = []
     tool_calls = []
