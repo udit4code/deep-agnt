@@ -31,3 +31,10 @@ def tool_uses(response):
         if isinstance(block, dict) and block.get("type") == "tool_use":
             tool_uses_list.append(block)
     return tool_uses_list
+
+
+def wants_tool(response):
+    """Return True when stop_reason is 'tool_use' and False otherwise."""
+    if not isinstance(response, dict):
+        return False
+    return response.get("stop_reason") == "tool_use"
