@@ -3,20 +3,20 @@ import difflib
 
 def tree_diff(before, after):
     """The fewest ops that turn `before` into `after`, moves recognised."""
-    # Step 1. Identify modified paths (exist in both with different content)
+    # Step 1 : Identify modified paths (exist in both with different content)
     modifies = []
     for p in before:
         if p in after and before[p] != after[p]:
             modifies.append({"op": "modify", "path": p, "content": after[p]})
             
-    # Vanished paths and new paths
+    # Step 2 : Vanished paths and new paths
     v_paths = [p for p in before if p not in after]
     n_paths = [q for q in after if q not in before]
     
     paired_new = set()
     renames = []
     
-    # Process vanished paths in sorted order for deterministic pairing
+    # Step 3 : Process vanished paths in sorted order for deterministic pairing
     for p in sorted(v_paths):
         content = before[p]
         candidates = [q for q in n_paths if q not in paired_new and after[q] == content]
@@ -29,7 +29,7 @@ def tree_diff(before, after):
     deletes = [{"op": "delete", "path": p} for p in v_paths if not any(r["from"] == p for r in renames)]
     adds = [{"op": "add", "path": q, "content": after[q]} for q in n_paths if q not in paired_new]
     
-    # Sort groups according to specifications
+    # Step 4 : Sort groups according to specifications
     renames.sort(key=lambda x: x["from"])
     modifies.sort(key=lambda x: x["path"])
     adds.sort(key=lambda x: x["path"])
