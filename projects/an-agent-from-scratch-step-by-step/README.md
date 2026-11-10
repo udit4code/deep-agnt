@@ -2,7 +2,7 @@
 
 The same agent as An agent from scratch, as 28 small functions in six parts, each a few lines with its own tests, composing into one system.
 
-Built step by step on [Deep-Agnt](https://deep-agnt.com/projects/agent-step-by-step): 14 of 28 steps passed, each graded by tests.
+Built step by step on [Deep-Agnt](https://deep-agnt.com/projects/agent-step-by-step): 15 of 28 steps passed, each graded by tests.
 
 - [x] Step 1: Extract the text blocks
 - [x] Step 2: Join the text
@@ -18,3 +18,4 @@ Built step by step on [Deep-Agnt](https://deep-agnt.com/projects/agent-step-by-s
 - [x] Step 12: Build the tool spec
 - [x] Step 13: Build a tool result
 - [x] Step 14: Run the tool the model asked for
+- [x] Step 15: The first message
