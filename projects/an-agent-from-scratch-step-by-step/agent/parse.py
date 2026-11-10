@@ -19,3 +19,15 @@ def text_of(response):
     if not blocks:
         return ""
     return "\n".join(blocks).strip()
+
+
+def tool_uses(response):
+    """Return the blocks whose type is 'tool_use', in order, unchanged."""
+    content_list = response.get("content")
+    if not content_list:
+        return []
+    tool_uses_list = []
+    for block in content_list:
+        if isinstance(block, dict) and block.get("type") == "tool_use":
+            tool_uses_list.append(block)
+    return tool_uses_list
