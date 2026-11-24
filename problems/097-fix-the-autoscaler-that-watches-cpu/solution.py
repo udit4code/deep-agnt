@@ -1,5 +1,4 @@
-import math
-
+import math 
 
 def scale(metrics, state):
     """How many workers to run from this tick."""
